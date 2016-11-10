@@ -1,0 +1,30 @@
+<h2 id="title">Welcome to Ember</h2>
+
+{{#form-validate as |form validate|}}
+  <ul class="errors">
+    {{#each form.errors as |err|}}
+      <li>{{err.name}}: {{err.errorMessage}}</li>
+    {{/each}}
+  </ul>
+
+  {{#form-validate-field value=required validators=validateRequired group=form as |validate errorMsg|}}
+    Required: {{input placeholder='Enter text ...' value=required focus-out=validate}}
+    {{input type='button' value='validate' click=(action validate)}} {{errorMsg}}
+  {{/form-validate-field}}
+
+    {{#form-validate-field value=integer validators=validateInteger group=form as |validate errorMsg|}}
+      {{#test-wrapper}}
+        Integer: {{input placeholder='Enter integer ...' value=integer focus-out=(action validate)}} {{errorMsg}}
+      {{/test-wrapper}}
+    {{/form-validate-field}}
+
+  {{#form-validate-field value=range validators=validateRange group=form as |validate errorMsg|}}
+    Range: {{wrap-input type='text' value=range placeholder='Enter value in range 5-10 ...'}}
+    {{input type='button' value='validate' click=(action validate)}} {{errorMsg}}
+  {{/form-validate-field}}
+
+  {{input type='button' value='Group Validate' click=(action validate)}}
+
+{{/form-validate}}
+
+{{outlet}}
