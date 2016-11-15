@@ -14,22 +14,22 @@ export default Ember.Controller.extend({
     }];
   }),
   validateInteger: Ember.computed('validator.validators', function() {
-    return [{
+    return {
       validator: this.get('validator.validators').Regular,
       parameters: [{
         regular: /^\d*$/
       }],
       errorMessage: 'Must be integer'
-    }];
+    };
   }),
-  validateRange: Ember.computed('validator.validators', function() {
-    return [{
+  validateRange() {
+    return {
       validator: this.get('validator.validators').NumberRange,
       parameters: [{
         min: 5,
         max: 10
       }],
       errorMessage: 'Must in range 5-10'
-    }];
-  })
+    };
+  }
 });

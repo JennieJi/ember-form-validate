@@ -30,6 +30,19 @@ export default Ember.Mixin.create(
   group: void 0,
   _group: void 0,
   validators: [],
+  _validators: Ember.computed('validators', function() {
+    let validators = this.get('validators');
+    if (typeof validators === 'function') {
+      validators = validators.call(this);
+    }
+    if (Ember.isArray(validators)) {
+      return validators;
+    } else if (typeof validators === 'object' && Object.keys(validators).includes('validator')) {
+      return [validators];
+    } else {
+      console.error('Invalid validators on element: ',  this.$());
+    }
+  }),
 
   _register(group) {
     if (group && group.register) {
@@ -59,7 +72,8 @@ export default Ember.Mixin.create(
      * @return {string}
      */
     validate() {
-      return this.get('validator').validate(this.get('value'), this.get('validators')).then(() => {
+      const validators = this.get('_validators');
+      return this.get('validator').validate(this.get('value'), validators).then(() => {
         this.set('errorMessage', '');
       }).catch(err => {
         this.set('errorMessage', err && err.errorMessage || '');

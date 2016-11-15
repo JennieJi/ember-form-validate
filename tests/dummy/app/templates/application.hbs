@@ -18,7 +18,7 @@
       {{/test-wrapper}}
     {{/form-validate-field}}
 
-  {{#form-validate-field value=range validators=validateRange group=form as |validate errorMsg|}}
+  {{#form-validate-field value=range validators=(action validateRange) group=form as |validate errorMsg|}}
     Range: {{wrap-input type='text' value=range placeholder='Enter value in range 5-10 ...'}}
     {{input type='button' value='validate' click=(action validate)}} {{errorMsg}}
   {{/form-validate-field}}

@@ -15,7 +15,7 @@ const {validate, groupValidate} = Validator.validate;
 function parseField(field) {
   return {
     value: field.get('value'),
-    validators: field.get('validators')
+    validators: field.get('_validators')
   };
 }
 
