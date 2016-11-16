@@ -19,7 +19,13 @@ HBS:
   </ul>
 
   {{#form-validate-field value=required validators=validateRequired group=form as |validate errorMsg|}}
-    Required: {{input placeholder='Enter text ...' value=required focus-out=validate}}
+    Required: {{input placeholder='Enter text ...' value=required focus-out=(action validate)}}
+    {{input type='button' value='validate' click=(action validate)}} 
+    {{errorMsg}}
+  {{/form-validate-field}}
+
+  {{#form-validate-field value=required validators=validateRequiredFunc group=form as |validate errorMsg|}}
+    Required2: {{input placeholder='Enter text ...' value=required2 focus-out=(action validate)}}
     {{input type='button' value='validate' click=(action validate)}} 
     {{errorMsg}}
   {{/form-validate-field}}
@@ -39,8 +45,12 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
   validator: Ember.inject.service(),
-
+  // A group of validators
   validateRequired: Ember.computed('validator.validators', function() {
+    return validateRequiredFunc();
+  }),
+  // Function by returning single/multiple validators
+  validateRequiredFunc() {
     return [{
       validator: this.get('validator.validators').Length,
       parameters: [{
@@ -49,15 +59,16 @@ export default Ember.Controller.extend({
       }],
       errorMessage: 'required'
     }];
-  }),
+  },
+  // Single object as validator
   validateInteger: Ember.computed('validator.validators', function() {
-    return [{
+    return {
       validator: this.get('validator.validators').Regular,
       parameters: [{
         regular: /^\d*$/
       }],
       errorMessage: 'Must be integer'
-    }];
+    };
   })
 });
 ```

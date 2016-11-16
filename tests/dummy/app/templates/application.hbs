@@ -12,10 +12,11 @@
     {{input type='button' value='validate' click=(action validate)}} {{errorMsg}}
   {{/form-validate-field}}
 
-    {{#form-validate-field value=integer validators=validateInteger group=form as |validate errorMsg|}}
+    {{#form-validate-field value=integer validators=validateInteger group=form disabled=integerValidatorDisabled as |validate errorMsg|}}
       {{#test-wrapper}}
         Integer: {{input placeholder='Enter integer ...' value=integer focus-out=(action validate)}} {{errorMsg}}
       {{/test-wrapper}}
+      {{input type='button' value=(if integerValidatorDisabled 'enable validate' 'disable validate') click=(action toggleProperty 'integerValidatorDisabled')}}
     {{/form-validate-field}}
 
   {{#form-validate-field value=range validators=(action validateRange) group=form as |validate errorMsg|}}

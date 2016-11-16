@@ -45,7 +45,7 @@ Wrapper component for a form for having the ability of validating all the elemen
 // > validators - the validators exposed by validatorService
 {{#form-validate as |form|}}
    {{#form-validate-field group=form value=input validators=validators as |validate errorMessage|}}
-     {{input value=input focus-out=validate}}
+     {{input value=input focus-out=(action validate)}}
      <p>{{errorMessage}}</p>
    {{/form-validate-field}}
 {{/form-validate}}
@@ -53,14 +53,63 @@ Wrapper component for a form for having the ability of validating all the elemen
 <a name="MIXIN_form-validator"></a>
 
 ## MIXIN:form-validator
-**Properties**
 
-| Name | Type | Description |
-| --- | --- | --- |
-| value |  | Value for validation |
-| form | <code>[COMPONENT:form-validate](#COMPONENT_form-validate)</code> | Instance of component form-validate. |
-| validators | <code>Array.&lt;function()&gt;</code> | A group of functions to validate value by return error messages or return false as valid. |
+* [MIXIN:form-validator](#MIXIN_form-validator)
+    * [.disabled](#MIXIN_form-validator.disabled) : <code>boolean</code>
+    * [.value](#MIXIN_form-validator.value) : <code>Object</code>
+    * [.errorMessage](#MIXIN_form-validator.errorMessage) : <code>string</code>
+    * [.group](#MIXIN_form-validator.group) : <code>[COMPONENT:form-validate](#COMPONENT_form-validate)</code>
+    * [.validators](#MIXIN_form-validator.validators) : <code>object</code> &#124; <code>function</code> &#124; <code>Array.&lt;object&gt;</code>
+    * [.actions](#MIXIN_form-validator.actions) : <code>object</code>
+        * [.validate()](#MIXIN_form-validator.actions.validate)
+    * [.validate()](#MIXIN_form-validator.validate) ⇒ <code>string</code>
 
+<a name="MIXIN_form-validator.disabled"></a>
+
+### MIXIN:form-validator.disabled : <code>boolean</code>
+**Kind**: static property of <code>[MIXIN:form-validator](#MIXIN_form-validator)</code>  
+**Since**: 0.0.1-beta.1  
+<a name="MIXIN_form-validator.value"></a>
+
+### MIXIN:form-validator.value : <code>Object</code>
+Value for validation
+
+**Kind**: static property of <code>[MIXIN:form-validator](#MIXIN_form-validator)</code>  
+<a name="MIXIN_form-validator.errorMessage"></a>
+
+### MIXIN:form-validator.errorMessage : <code>string</code>
+**Kind**: static property of <code>[MIXIN:form-validator](#MIXIN_form-validator)</code>  
+<a name="MIXIN_form-validator.group"></a>
+
+### MIXIN:form-validator.group : <code>[COMPONENT:form-validate](#COMPONENT_form-validate)</code>
+Instance of component form-validate
+
+**Kind**: static property of <code>[MIXIN:form-validator](#MIXIN_form-validator)</code>  
+<a name="MIXIN_form-validator.validators"></a>
+
+### MIXIN:form-validator.validators : <code>object</code> &#124; <code>function</code> &#124; <code>Array.&lt;object&gt;</code>
+A group of validators, see light-form-validate's validators parameter of validate method.
+
+**Kind**: static property of <code>[MIXIN:form-validator](#MIXIN_form-validator)</code>  
+<a name="MIXIN_form-validator.actions"></a>
+
+### MIXIN:form-validator.actions : <code>object</code>
+**Kind**: static property of <code>[MIXIN:form-validator](#MIXIN_form-validator)</code>  
+<a name="MIXIN_form-validator.actions.validate"></a>
+
+#### actions.validate()
+**Kind**: static method of <code>[actions](#MIXIN_form-validator.actions)</code>  
+**Todo**
+
+- [ ] Deprecate in next version
+
+<a name="MIXIN_form-validator.validate"></a>
+
+### MIXIN:form-validator.validate() ⇒ <code>string</code>
+Validate the value by given validators.
+
+**Kind**: static method of <code>[MIXIN:form-validator](#MIXIN_form-validator)</code>  
+**Since**: 0.0.1-beta.3  
 <a name="ValidateGroup"></a>
 
 ## ValidateGroup

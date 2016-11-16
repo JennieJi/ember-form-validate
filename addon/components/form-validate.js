@@ -11,7 +11,7 @@ import layout from '../templates/components/form-validate';
  * // > validators - the validators exposed by validatorService
  * {{#form-validate as |form|}}
  *    {{#form-validate-field group=form value=input validators=validators as |validate errorMessage|}}
- *      {{input value=input focus-out=validate}}
+ *      {{input value=input focus-out=(action validate)}}
  *      <p>{{errorMessage}}</p>
  *    {{/form-validate-field}}
  * {{/form-validate}}

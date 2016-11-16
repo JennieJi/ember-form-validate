@@ -56,7 +56,9 @@ export function ValidateGroup() {
    * @param field {Ember.Component}
    */
   this.register = field => {
-    _fields.push(field);
+    if (_fields.indexOf(field) < 0) {
+      _fields.push(field);
+    }
   };
 
   /**

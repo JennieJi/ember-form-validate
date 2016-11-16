@@ -1,10 +1,6 @@
 import Ember from 'ember';
 /**
  * @exports MIXIN:form-validator
- *
- * @prop value {} Value for validation
- * @prop form {?COMPONENT:form-validate} Instance of component form-validate.
- * @prop validators {function[]} A group of functions to validate value by return error messages or return false as valid.
  */
 export default Ember.Mixin.create(
 /** @lends MIXIN:form-validator */
@@ -16,7 +12,19 @@ export default Ember.Mixin.create(
     'errorMessage:ember-form-validate__validator--invalid'
   ],
 
+  /**
+   * @type {boolean}
+   * @since 0.0.1-beta.1
+   */
+  disabled: false,
+  /**
+   * Value for validation
+   * @type {}
+   */
   value: void 0,
+  /**
+   * @type {string}
+   */
   errorMessage: void 0,
   _errorMessageObserver: Ember.observer('group.errors', function() {
     const group = this.get('_group');
@@ -27,8 +35,16 @@ export default Ember.Mixin.create(
       }
     }
   }),
+  /**
+   * Instance of component form-validate
+   * @type {?COMPONENT:form-validate}
+   */
   group: void 0,
   _group: void 0,
+  /**
+   * A group of validators, see light-form-validate's validators parameter of validate method.
+   * @type {object|function|Array.<object>}
+   */
   validators: [],
   _validators: Ember.computed('validators', function() {
     let validators = this.get('validators');
@@ -55,29 +71,55 @@ export default Ember.Mixin.create(
     }
   },
 
-  _formValidatorSetup: Ember.on('didReceiveAttrs', Ember.observer('group', function() {
+
+  _resetValidate() {
+    this.set('errorMessage', '');
+  },
+  _formValidatorSetup: Ember.on('init', Ember.observer('group', function() {
     const newGroup = this.get('group');
     this._unregister(this.get('_group'));
     this.set('_group', newGroup);
-    this._register(newGroup);
+    if (!this.get('disabled')) {
+      this._register(newGroup);
+    }
+  })),
+  _formValidatorEnable: Ember.on('init', Ember.observer('disabled', function() {
+    if (this.get('disabled')) {
+      this._unregister(this.get('group'));
+      this._resetValidate();
+    } else {
+      this._register(this.get('group'));
+    }
   })),
   willDestroyElement() {
     this._unregister(this.get('group'));
   },
 
+  /**
+   * @method
+   * @since 0.0.1-beta.3
+   * @desc Validate the value by given validators.
+   * @return {string}
+   */
+  validate() {
+    if (this.get('disabled')) { return; }
+    const validators = this.get('_validators');
+    return this.get('validator').validate(this.get('value'), validators).then(() => {
+      this._resetValidate();
+    }).catch(err => {
+      this.set('errorMessage', err && err.errorMessage || '');
+    });
+  },
+
+  /**
+   * @type {object}
+   */
   actions: {
     /**
-     * @method
-     * @desc Validate the value by given validators.
-     * @return {string}
+     * @todo Deprecate in next version
      */
     validate() {
-      const validators = this.get('_validators');
-      return this.get('validator').validate(this.get('value'), validators).then(() => {
-        this.set('errorMessage', '');
-      }).catch(err => {
-        this.set('errorMessage', err && err.errorMessage || '');
-      });
+      return this.validate();
     }
   }
 });
