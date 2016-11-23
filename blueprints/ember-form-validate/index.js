@@ -10,6 +10,6 @@ module.exports = {
   // }
 
   afterInstall: function(options) {
-    return this.addBowerPackageToProject('light-validate-js');
+    return this.addBowerPackageToProject('light-validate-js', '~0.0.1');
   }
 };
