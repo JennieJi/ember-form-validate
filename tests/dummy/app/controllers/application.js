@@ -1,3 +1,4 @@
+/* global Validator */
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
@@ -15,11 +16,11 @@ export default Ember.Controller.extend({
   }),
   validateInteger: Ember.computed('validator.validators', function() {
     return {
-      validator: this.get('validator.validators').Regular,
-      parameters: [{
-        regular: /^\d*$/
-      }],
-      errorMessage: 'Must be integer'
+      validator(value) {
+        return Validator.validator.Regular(value, {
+          regular: /^\d*$/
+        }) || Ember.String.htmlSafe('Must be integer');
+      }
     };
   }),
   validateRange() {

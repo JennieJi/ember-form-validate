@@ -3,7 +3,7 @@
 {{#form-validate as |form validate|}}
   <ul class="errors">
     {{#each form.errors as |err|}}
-      <li>{{err.name}}: {{err.errorMessage}}</li>
+      <li>{{err.name}}: {{if err.errorMessage err.errorMessage err.error}}</li>
     {{/each}}
   </ul>
 

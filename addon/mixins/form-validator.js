@@ -26,15 +26,17 @@ export default Ember.Mixin.create(
    * @type {string}
    */
   errorMessage: void 0,
-  _errorMessageObserver: Ember.observer('group.errors', function() {
+  _errorMessageObserver: Ember.observer('group.errors.[]', function() {
     const group = this.get('_group');
+    let error;
     if (group.errors.length) {
-      let error = group && group.getError && group.getError(this);
-      if (error) {
-        this.set('errorMessage', error.errorMessage);
-      }
+      error = group && group.getError && group.getError(this);
     }
+    this._updateErrorMessage(error);
   }),
+  _updateErrorMessage(errorObj) {
+    this.set('errorMessage', errorObj && (Ember.String.htmlSafe(errorObj.errorMessage) || errorObj.error instanceof Ember.Handlebars.SafeString && errorObj.error) || '');
+  },
   /**
    * Instance of component form-validate
    * @type {?COMPONENT:form-validate}
@@ -73,7 +75,7 @@ export default Ember.Mixin.create(
 
 
   _resetValidate() {
-    this.set('errorMessage', '');
+    this._updateErrorMessage();
   },
   _formValidatorSetup: Ember.on('init', Ember.observer('group', function() {
     const newGroup = this.get('group');
@@ -106,9 +108,7 @@ export default Ember.Mixin.create(
     const validators = this.get('_validators');
     return this.get('validator').validate(this.get('value'), validators).then(() => {
       this._resetValidate();
-    }).catch(err => {
-      this.set('errorMessage', err && err.errorMessage || '');
-    });
+    }).catch(err => this._updateErrorMessage(err));
   },
 
   /**
