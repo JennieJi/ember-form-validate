@@ -26,17 +26,9 @@ export default Ember.Mixin.create(
    * @type {string}
    */
   errorMessage: void 0,
-  _errorMessageObserver: Ember.observer('group.errors.[]', function() {
-    const group = this.get('_group');
-    let error;
-    if (group.errors.length) {
-      error = group && group.getError && group.getError(this);
-    }
-    this._updateErrorMessage(error);
-  }),
   _updateErrorMessage(errorObj) {
     if (!(this.get('isDestroyed') || this.get('isDestroying'))) {
-      this.set('errorMessage', errorObj && (Ember.String.htmlSafe(errorObj.errorMessage) || errorObj.error instanceof Ember.Handlebars.SafeString && errorObj.error) || '');
+      this.set('errorMessage', errorObj && (errorObj.errorMessage || errorObj.error instanceof Ember.Handlebars.SafeString && errorObj.error) || '');
     }
   },
   /**
@@ -65,16 +57,19 @@ export default Ember.Mixin.create(
   }),
 
   _register(group) {
-    if (group && group.register) {
+    if (Ember.isArray(group)){
+      group.forEach(g => this._register(g));
+    } else if (group && group.register) {
       group.register(this);
     }
   },
   _unregister(group) {
-    if (group && group.unregister) {
+    if (Ember.isArray(group)){
+      group.forEach(g => this._unregister(g));
+    } else if (group && group.unregister) {
       group.unregister(this);
     }
   },
-
 
   _resetValidate() {
     this._updateErrorMessage();
@@ -108,11 +103,7 @@ export default Ember.Mixin.create(
   validate() {
     if (this.get('disabled')) { return; }
     const validators = this.get('_validators');
-    return this.get('validator').validate(this.get('value'), validators).then(() => {
-      this._resetValidate();
-    }).catch(err => {
-      this._updateErrorMessage(err);
-    });
+    return this.get('validator').validate(this.get('value'), validators).then(() => this._resetValidate()).catch(err => this._updateErrorMessage(err));
   },
 
   /**

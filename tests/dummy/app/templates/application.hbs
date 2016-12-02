@@ -1,33 +1,41 @@
 <h2 id="title">Welcome to Ember</h2>
 
 {{#form-validate as |form validate|}}
+  <legend>Form A</legend>
   <ul class="errors">
     {{#each form.errors as |err|}}
       <li>{{err.name}}: {{if err.errorMessage err.errorMessage err.error}}</li>
     {{/each}}
   </ul>
-  {{#if fieldDisplay}}
-    {{#form-validate-field value=required validators=validateRequired group=form as |validate errorMsg|}}
-      Required: {{input placeholder='Enter text ...' value=required focus-out=validate}}
-      {{input type='button' value='validate' click=(action validate)}} {{errorMsg}}
-    {{/form-validate-field}}
-  {{/if}}
 
-    {{#form-validate-field value=integer validators=validateInteger group=form disabled=integerValidatorDisabled as |validate errorMsg|}}
-      {{#test-wrapper}}
-        Integer: {{input placeholder='Enter integer ...' value=integer focus-out=(action validate)}} {{errorMsg}}
-      {{/test-wrapper}}
-      {{input type='button' value=(if integerValidatorDisabled 'enable validate' 'disable validate') click=(action toggleProperty 'integerValidatorDisabled')}}
-    {{/form-validate-field}}
+  {{#form-validate as |formB validateFormB|}}
+    <legend>Form B</legend>
+    {{#each formB.errors as |err|}}
+      <li>{{err.name}}: {{if err.errorMessage err.errorMessage err.error}}</li>
+    {{/each}}
+    {{#if fieldDisplay}}
+      {{#form-validate-field value=required validators=validateRequired group=(array formB form) as |validate errorMsg|}}
+        Required(Multi group): {{input placeholder='Enter text ...' value=required focus-out=validate}}
+        {{input type='button' value='validate reguired' click=(action validate)}} {{errorMsg}}
+      {{/form-validate-field}}
+    {{/if}}
+    {{input type='submit' value='Validate Form B' click=(action validateFormB)}}
+  {{/form-validate}}
+
+  {{#form-validate-field value=integer validators=validateInteger group=form disabled=integerValidatorDisabled as |validate errorMsg|}}
+    {{#test-wrapper}}
+      Integer: {{input placeholder='Enter integer ...' value=integer focus-out=(action validate)}} {{errorMsg}}
+    {{/test-wrapper}}
+    {{input type='button' value=(if integerValidatorDisabled 'enable validate integer' 'disable validate integer') click=(action toggleProperty 'integerValidatorDisabled')}}
+  {{/form-validate-field}}
 
   {{#form-validate-field value=range validators=(action validateRange) group=form as |validate errorMsg|}}
     Range: {{wrap-input type='text' value=range placeholder='Enter value in range 5-10 ...'}}
-    {{input type='button' value='validate' click=(action validate)}} {{errorMsg}}
+    {{input type='button' value='validate range' click=(action validate)}} {{errorMsg}}
   {{/form-validate-field}}
 
-  {{input type='button' value='Group Validate' click=(action validate)}}
-  {{input type='button' value='Group Validate and Destory' click=(action 'destoryField' (action validate))}}
+  {{input type='button' value='Validate Form A' click=(action validate)}}
+  {{input type='button' value='Validate Form A and Destory' click=(action 'destoryField' (action validate))}}
 
 {{/form-validate}}
-
 {{outlet}}
