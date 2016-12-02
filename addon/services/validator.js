@@ -99,6 +99,13 @@ export function ValidateGroup() {
       return true;
     }).catch(errs => {
       _cacheValidateFields = cacheFields;
+      if (Ember.isArray(errs)) {
+        errs.forEach(err => {
+          if (Ember.isPresent(err && err.name) && Ember.isPresent(cacheFields[err.name])) {
+            cacheFields[err.name]._updateErrorMessage(err);
+          }
+        });
+      }
       Ember.set(this, 'errors', errs);
       throw errs;
     });
