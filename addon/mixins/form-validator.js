@@ -109,10 +109,9 @@ export default Ember.Mixin.create(
     if (this.get('disabled')) { return; }
     const validators = this.get('_validators');
     return this.get('validator').validate(this.get('value'), validators).then(() => {
-        this._resetValidate();
-      }).catch(err => {
-        this._updateErrorMessage(err);
-      }).finally(() => resolve());
+      this._resetValidate();
+    }).catch(err => {
+      this._updateErrorMessage(err);
     });
   },
 
