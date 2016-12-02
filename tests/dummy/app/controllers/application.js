@@ -32,5 +32,17 @@ export default Ember.Controller.extend({
       }],
       errorMessage: 'Must in range 5-10'
     };
+  },
+
+  fieldDisplay: true,
+
+  actions: {
+    destoryField(callback, e) {
+      e.preventDefault();
+      this.set('fieldDisplay', false);
+      if (typeof callback === 'function') {
+        Ember.run.next(this, callback);
+      }
+    }
   }
 });

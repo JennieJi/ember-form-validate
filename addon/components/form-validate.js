@@ -27,7 +27,7 @@ export default Ember.Component.extend({
     'instance.errors.length:ember-form-validate--invalid'
   ],
   instance: void 0,
-  setup: Ember.on('didReceiveAttrs', function() {
+  setup: Ember.on('init', function() {
     if (!this.get('instance')) {
       let instance = this.get('validator').createGroup();
       this.set('instance', instance);
@@ -38,8 +38,10 @@ export default Ember.Component.extend({
     validate(successCallback, failCallback) {
       const instance = this.get('instance');
       if (instance) {
-        let e = arguments[arguments.length - 1];
-        e.preventDefault();
+        let event = arguments[arguments.length - 1];
+        if (event && event.preventDefault) {
+          event.preventDefault();
+        }
         return instance.validate(this.get('exitOnceError')).then(() => {
           if (typeof successCallback === 'function') {
             successCallback.call(this);

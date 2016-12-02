@@ -6,11 +6,12 @@
       <li>{{err.name}}: {{if err.errorMessage err.errorMessage err.error}}</li>
     {{/each}}
   </ul>
-
-  {{#form-validate-field value=required validators=validateRequired group=form as |validate errorMsg|}}
-    Required: {{input placeholder='Enter text ...' value=required focus-out=validate}}
-    {{input type='button' value='validate' click=(action validate)}} {{errorMsg}}
-  {{/form-validate-field}}
+  {{#if fieldDisplay}}
+    {{#form-validate-field value=required validators=validateRequired group=form as |validate errorMsg|}}
+      Required: {{input placeholder='Enter text ...' value=required focus-out=validate}}
+      {{input type='button' value='validate' click=(action validate)}} {{errorMsg}}
+    {{/form-validate-field}}
+  {{/if}}
 
     {{#form-validate-field value=integer validators=validateInteger group=form disabled=integerValidatorDisabled as |validate errorMsg|}}
       {{#test-wrapper}}
@@ -25,6 +26,7 @@
   {{/form-validate-field}}
 
   {{input type='button' value='Group Validate' click=(action validate)}}
+  {{input type='button' value='Group Validate and Destory' click=(action 'destoryField' (action validate))}}
 
 {{/form-validate}}
 

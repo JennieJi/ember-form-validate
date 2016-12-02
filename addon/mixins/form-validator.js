@@ -35,7 +35,9 @@ export default Ember.Mixin.create(
     this._updateErrorMessage(error);
   }),
   _updateErrorMessage(errorObj) {
-    this.set('errorMessage', errorObj && (Ember.String.htmlSafe(errorObj.errorMessage) || errorObj.error instanceof Ember.Handlebars.SafeString && errorObj.error) || '');
+    if (!(this.get('isDestroyed') || this.get('isDestroying'))) {
+      this.set('errorMessage', errorObj && (Ember.String.htmlSafe(errorObj.errorMessage) || errorObj.error instanceof Ember.Handlebars.SafeString && errorObj.error) || '');
+    }
   },
   /**
    * Instance of component form-validate
@@ -107,8 +109,11 @@ export default Ember.Mixin.create(
     if (this.get('disabled')) { return; }
     const validators = this.get('_validators');
     return this.get('validator').validate(this.get('value'), validators).then(() => {
-      this._resetValidate();
-    }).catch(err => this._updateErrorMessage(err));
+        this._resetValidate();
+      }).catch(err => {
+        this._updateErrorMessage(err);
+      }).finally(() => resolve());
+    });
   },
 
   /**
