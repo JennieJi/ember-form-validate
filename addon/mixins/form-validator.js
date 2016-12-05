@@ -28,7 +28,12 @@ export default Ember.Mixin.create(
   errorMessage: void 0,
   _updateErrorMessage(errorObj) {
     if (!(this.get('isDestroyed') || this.get('isDestroying'))) {
-      this.set('errorMessage', errorObj && (errorObj.errorMessage || errorObj.error instanceof Ember.Handlebars.SafeString && errorObj.error) || '');
+      this.set('errorMessage', errorObj &&
+        (errorObj.errorMessage ||
+          (Ember.isPresent(errorObj.error) &&
+            (Ember.String.isHTMLSafe && Ember.String.isHTMLSafe(errorObj.error) ? errorObj.error : errorObj.error.toString())
+          ) || '')
+      );
     }
   },
   /**
