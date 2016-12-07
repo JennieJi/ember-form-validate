@@ -5,14 +5,14 @@ export default Ember.Controller.extend({
   validator: Ember.inject.service(),
 
   validateRequired: Ember.computed('validator.validators', function() {
-    return [{
+    return {
       validator: this.get('validator.validators').Length,
       parameters: [{
         min: 0,
         excludeEdge: true
       }],
       errorMessage: 'required'
-    }];
+    };
   }),
   validateInteger: Ember.computed('validator.validators', function() {
     return {

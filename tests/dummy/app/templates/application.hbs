@@ -34,6 +34,18 @@
     {{input type='button' value='validate range' click=(action validate)}} {{errorMsg}}
   {{/form-validate-field}}
 
+  {{#form-validate-field value=emptyValidator validators=(if requireEmptyValidatorEnabled validateRequired) validatorGroup=form as |validate errorMsg|}}
+    Empty Validator: {{input value=emptyValidator focus-out=(action validate)}}
+    {{input type='button' value='validate empty validator' click=(action validate)}} {{errorMsg}}
+    {{input type='button' value=(if requireEmptyValidatorEnabled 'disable require validator' 'enable require validator') click=(action toggleProperty 'requireEmptyValidatorEnabled')}}
+  {{/form-validate-field}}
+
+  {{#form-validate-field value=containsEmptyValidator validators=(array validateRequired (if integerContainsEmptyValidatorEnabled validateInteger)) validatorGroup=form as |validate errorMsg|}}
+    Contains Empty Validator: {{input value=containsEmptyValidator focus-out=(action validate)}}
+    {{input type='button' value='validate empty validator' click=(action validate)}} {{errorMsg}}
+    {{input type='button' value=(if integerContainsEmptyValidatorEnabled 'disable integer validator' 'enable integer validator') click=(action toggleProperty 'integerContainsEmptyValidatorEnabled')}}
+  {{/form-validate-field}}
+
   {{input type='button' value='Validate Form A' click=(action validate)}}
   {{input type='button' value='Validate Form A and Destory' click=(action 'destoryField' (action validate))}}
 

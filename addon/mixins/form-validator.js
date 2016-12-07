@@ -53,9 +53,11 @@ export default Ember.Mixin.create(
       validators = validators.call(this);
     }
     if (Ember.isArray(validators)) {
-      return validators;
+      return validators.filter(v => Ember.isPresent(v));
     } else if (typeof validators === 'object' && Object.keys(validators).includes('validator')) {
       return [validators];
+    } else if (Ember.isNone(validators) || validators === false) {
+      return [];
     } else {
       console.error('Invalid validators on element: ',  this.$());
     }
