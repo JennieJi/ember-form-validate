@@ -18,19 +18,19 @@ HBS:
     {{/each}}
   </ul>
 
-  {{#form-validate-field value=required validators=validateRequired group=form as |validate errorMsg|}}
+  {{#form-validate-field value=required validators=validateRequired validatorGroup=form as |validate errorMsg|}}
     Required: {{input placeholder='Enter text ...' value=required focus-out=(action validate)}}
     {{input type='button' value='validate' click=(action validate)}} 
     {{errorMsg}}
   {{/form-validate-field}}
 
-  {{#form-validate-field value=required validators=validateRequiredFunc group=form as |validate errorMsg|}}
+  {{#form-validate-field value=required validators=validateRequiredFunc validatorGroup=form as |validate errorMsg|}}
     Required2: {{input placeholder='Enter text ...' value=required2 focus-out=(action validate)}}
     {{input type='button' value='validate' click=(action validate)}} 
     {{errorMsg}}
   {{/form-validate-field}}
 
-  {{#form-validate-field value=integer validators=validateInteger group=form as |validate errorMsg|}}
+  {{#form-validate-field value=integer validators=validateInteger validatorGroup=form as |validate errorMsg|}}
     Integer: {{input placeholder='Enter integer ...' value=integer focus-out=(action validate)}} 
     {{errorMsg}}
   {{/form-validate-field}}

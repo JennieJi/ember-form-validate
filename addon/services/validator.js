@@ -7,98 +7,94 @@ import Ember from 'ember';
 Validator.validate.Promise = Ember.RSVP.Promise;
 const {validate, groupValidate} = Validator.validate;
 
-/**
- * @private
- * @param field {Ember.Component}
- * @return {object}
- */
-function parseField(field) {
-  return {
-    value: field.get('value'),
-    validators: field.get('_validators')
-  };
-}
 
 /**
  * ValidateGroup
  * @class
  */
-export function ValidateGroup() {
-  let _fields = [];
-  let _cacheValidateFields = [];
+export class ValidateGroup {
+  constructor () {
+    this.fields = [];
+    this.cacheValidateFields = [];
+    this.errors = [];
+  }
 
   /**
-   * @prop fields {Array.<Ember.Component>}
+   * @private
+   * @param field {Ember.Component}
+   * @return {object}
    */
-  this.fields = _fields;
-  /**
-   * @prop errors {Array.<ValidateError>}
-   */
-  this.errors = [];
+  parseField(field) {
+    return {
+      value: field.get('value'),
+      validators: field.get('_validators')
+    };
+  }
 
-  /**
-   * @method
-   */
-  this.parseField = parseField;
   /**
    * @method
    * @param fields {Array.<Ember.Component>} See {@link ValidateGroup.fields}
    * @return {Array.<object>}
    */
-  this.parseGroup = fields => {
+  parseGroup(fields) {
     let group = {};
     fields.forEach((field, i) => group[i] = this.parseField(field));
     return group;
-  };
+  }
 
   /**
    * @method
    * @param field {Ember.Component}
    */
-  this.register = field => {
-    if (_fields.indexOf(field) < 0) {
-      _fields.push(field);
+  register(field) {
+    if (this.fields.indexOf(field) < 0) {
+      this.fields.push(field);
     }
-  };
+  }
 
   /**
    * @method
    * @param field {Ember.Component}
    */
-  this.unregister = field => {
-    let i = _fields.indexOf(field);
-    _fields.splice(i, 1);
-  };
+  unregister(field) {
+    this.fields.splice(this.fields.indexOf(field), 1);
+    const cachedId = this.cacheValidateFields.indexOf(field);
+    if (Ember.isArray(this.errors)) {
+      Ember.set(this, 'errors', this.errors.filter(err => err.name.toString() !== cachedId.toString()));
+    }
+  }
 
   /**
    * @method
    * @return {Array} See {@link ValidateGroup.errors}
    */
-  this.resetErrors = () => Ember.set(this, 'errors', []);
+  resetErrors() {
+    return Ember.set(this, 'errors', []);
+  }
 
   /**
    * @method
    * @param field {Ember.Component}
    * @return {ValidateError}
    */
-  this.getError = field => {
-    const id = _cacheValidateFields.indexOf(field);
+  getError(field) {
+    const id = this.cacheValidateFields.indexOf(field);
     return this.errors.find(f => f.name.toString() === id.toString());
-  };
+  }
 
   /**
    * @method
    * @param exitOnceError {boolean}
    * @return {ValidatePromise}
    */
-  this.validate = (exitOnceError = true) => {
-    const cacheFields = _fields.slice();
+  validate(exitOnceError = true) {
+    const cacheFields = this.fields.slice();
     this.resetErrors();
-    return groupValidate(this.parseGroup(_fields), exitOnceError).then(() => {
-      _cacheValidateFields = cacheFields;
+    return groupValidate(this.parseGroup(this.fields), exitOnceError).then(() => {
+      this.cacheValidateFields = cacheFields;
       return true;
     }).catch(errs => {
-      _cacheValidateFields = cacheFields;
+      this.cacheValidateFields = cacheFields;
       if (Ember.isArray(errs)) {
         errs.forEach(err => {
           if (Ember.isPresent(err && err.name) && Ember.isPresent(cacheFields[err.name])) {
@@ -109,9 +105,7 @@ export function ValidateGroup() {
       Ember.set(this, 'errors', errs);
       throw errs;
     });
-  };
-
-  return this;
+  }
 }
 
 /**

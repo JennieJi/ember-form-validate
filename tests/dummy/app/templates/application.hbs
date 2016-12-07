@@ -14,7 +14,7 @@
       <li>{{err.name}}: {{if err.errorMessage err.errorMessage err.error}}</li>
     {{/each}}
     {{#if fieldDisplay}}
-      {{#form-validate-field value=required validators=validateRequired group=(array formB form) as |validate errorMsg|}}
+      {{#form-validate-field value=required validators=validateRequired validatorGroup=(array formB form) as |validate errorMsg|}}
         Required(Multi group): {{input placeholder='Enter text ...' value=required focus-out=validate}}
         {{input type='button' value='validate reguired' click=(action validate)}} {{errorMsg}}
       {{/form-validate-field}}
@@ -22,14 +22,14 @@
     {{input type='submit' value='Validate Form B' click=(action validateFormB)}}
   {{/form-validate}}
 
-  {{#form-validate-field value=integer validators=validateInteger group=form disabled=integerValidatorDisabled as |validate errorMsg|}}
+  {{#form-validate-field value=integer validators=validateInteger validatorGroup=form disabled=integerValidatorDisabled as |validate errorMsg|}}
     {{#test-wrapper}}
       Integer: {{input placeholder='Enter integer ...' value=integer focus-out=(action validate)}} {{errorMsg}}
     {{/test-wrapper}}
     {{input type='button' value=(if integerValidatorDisabled 'enable validate integer' 'disable validate integer') click=(action toggleProperty 'integerValidatorDisabled')}}
   {{/form-validate-field}}
 
-  {{#form-validate-field value=range validators=(action validateRange) group=form as |validate errorMsg|}}
+  {{#form-validate-field value=range validators=(action validateRange) validatorGroup=form as |validate errorMsg|}}
     Range: {{wrap-input type='text' value=range placeholder='Enter value in range 5-10 ...'}}
     {{input type='button' value='validate range' click=(action validate)}} {{errorMsg}}
   {{/form-validate-field}}
