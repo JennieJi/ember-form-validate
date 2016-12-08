@@ -44,11 +44,11 @@ export default Ember.Component.extend({
         }
         return instance.validate(this.get('exitOnceError')).then(() => {
           if (typeof successCallback === 'function') {
-            successCallback.call(this);
+            return successCallback(this);
           }
         }).catch(err => {
           if (typeof failCallback === 'function') {
-            failCallback.call(this, err);
+            return failCallback(err);
           }
         });
       }
