@@ -44,7 +44,7 @@ export default Ember.Component.extend({
         }
         return instance.validate(this.get('exitOnceError')).then(() => {
           if (typeof successCallback === 'function') {
-            return successCallback(this);
+            return successCallback();
           }
         }).catch(err => {
           if (typeof failCallback === 'function') {
