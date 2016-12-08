@@ -117,9 +117,10 @@ export function createValidator (func, ...params) {
   if (typeof func !== 'function') {
     throw `First parameter of SERVICE:validator~createValidator ${func} is not a function!`;
   }
-  return [function(value) {
-    return func(value, ...params);
-  }];
+  return {
+    validator: func,
+    parameters: params
+  };
 }
 
 export default Ember.Service.extend({

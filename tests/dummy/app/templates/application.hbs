@@ -14,7 +14,7 @@
       <li>{{err.name}}: {{if err.errorMessage err.errorMessage err.error}}</li>
     {{/each}}
     {{#if fieldDisplay}}
-      {{#form-validate-field value=required validators=validateRequired validatorGroup=(array formB form) as |validate errorMsg|}}
+      {{#form-validate-field value=required validators=(validator 'Length' (hash min=0 excludeEdge=true) errorMessage='Field is Required') validatorGroup=(array formB form) as |validate errorMsg|}}
         Required(Multi group): {{input placeholder='Enter text ...' value=required focus-out=validate}}
         {{input type='button' value='validate reguired' click=(action validate)}} {{errorMsg}}
       {{/form-validate-field}}
