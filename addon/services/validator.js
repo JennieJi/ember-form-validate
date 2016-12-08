@@ -14,9 +14,9 @@ const {validate, groupValidate} = Validator.validate;
  */
 export class ValidateGroup {
   constructor () {
-    this.fields = [];
-    this.cacheValidateFields = [];
-    this.errors = [];
+    this.fields = Ember.A();
+    this.cacheValidateFields =  Ember.A();
+    this.errors =  Ember.A();
   }
 
   /**
@@ -48,7 +48,7 @@ export class ValidateGroup {
    */
   register(field) {
     if (this.fields.indexOf(field) < 0) {
-      this.fields.push(field);
+      this.fields.addObject(field);
     }
   }
 
@@ -57,11 +57,11 @@ export class ValidateGroup {
    * @param field {Ember.Component}
    */
   unregister(field) {
-    this.fields.splice(this.fields.indexOf(field), 1);
-    const cachedId = this.cacheValidateFields.indexOf(field);
-    if (Ember.isArray(this.errors)) {
-      Ember.set(this, 'errors', this.errors.filter(err => err.name.toString() !== cachedId.toString()));
+    let index = this.fields.indexOf(field);
+    if (index >= 0) {
+      this.fields.removeAt(index);
     }
+    this._removeError(field);
   }
 
   /**
@@ -69,17 +69,51 @@ export class ValidateGroup {
    * @return {Array} See {@link ValidateGroup.errors}
    */
   resetErrors() {
-    return Ember.set(this, 'errors', []);
+    return this.errors.clear();
   }
 
+  _getCachedFieldIndex(field) {
+    return this.cacheValidateFields.indexOf(field);
+  }
   /**
    * @method
    * @param field {Ember.Component}
    * @return {ValidateError}
    */
   getError(field) {
-    const id = this.cacheValidateFields.indexOf(field);
-    return this.errors.find(f => f.name.toString() === id.toString());
+    const id = this._getCachedFieldIndex(field).toString();
+    return this.errors.find(f => f.name.toString() === id);
+  }
+
+  _removeError(field) {
+    this.errors.removeObject(this.getError(field));
+  }
+  /**
+   * @method
+   * @since 0.0.1-beta.10
+   * @param field {Ember.Component}
+   */
+  updateError(field) {
+    const fieldError = field.get('_validateError');
+    if (!fieldError) {
+      this._removeError(field);
+    } else {
+      const id = this._getCachedFieldIndex(field);
+      let existingError = this.getError(field);
+      let errorName = id < 0 ? this.cacheValidateFields.length : id;
+      if (existingError) {
+        Ember.merge(existingError, {
+          name: errorName
+        });
+      } else {
+        this.errors.pushObject(Ember.merge({
+          name: errorName
+        }, fieldError));
+      }
+      if (id < 0) {
+        this.cacheValidateFields.pushObject(field);
+      }
+    }
   }
 
   /**
@@ -91,10 +125,11 @@ export class ValidateGroup {
     const cacheFields = this.fields.slice();
     this.resetErrors();
     return groupValidate(this.parseGroup(this.fields), exitOnceError).then(() => {
-      this.cacheValidateFields = cacheFields;
+      this.cacheValidateFields.setObjects(cacheFields);
+      this.resetErrors();
       return true;
     }).catch(errs => {
-      this.cacheValidateFields = cacheFields;
+      this.cacheValidateFields.setObjects(cacheFields);
       if (Ember.isArray(errs)) {
         errs.forEach(err => {
           if (Ember.isPresent(err && err.name) && Ember.isPresent(cacheFields[err.name])) {
@@ -102,7 +137,7 @@ export class ValidateGroup {
           }
         });
       }
-      Ember.set(this, 'errors', errs);
+      this.errors.setObjects(errs);
       throw errs;
     });
   }

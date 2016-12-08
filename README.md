@@ -18,15 +18,20 @@ HBS:
     {{/each}}
   </ul>
 
-  {{#form-validate-field value=required validators=validateRequired validatorGroup=form as |validate errorMsg|}}
-    Required: {{input placeholder='Enter text ...' value=required focus-out=(action validate)}}
+  {{#form-validate-field value=required1 validators=validateRequired validatorGroup=form as |validate errorMsg|}}
+    Required: {{input placeholder='Enter text ...' value=required1 focus-out=(action validate)}}
     {{input type='button' value='validate' click=(action validate)}} 
     {{errorMsg}}
   {{/form-validate-field}}
 
-  {{#form-validate-field value=required validators=validateRequiredFunc validatorGroup=form as |validate errorMsg|}}
+  {{#form-validate-field value=required2 validators=validateRequiredFunc validatorGroup=form as |validate errorMsg|}}
     Required2: {{input placeholder='Enter text ...' value=required2 focus-out=(action validate)}}
     {{input type='button' value='validate' click=(action validate)}} 
+    {{errorMsg}}
+  {{/form-validate-field}}
+
+  {{#form-validate-field value=required3 validators=(validator 'Length' params=(hash excludeEdge=true) errorMessage='This field is required!') validatorGroup=form as |validate errorMsg|}}
+    Required: {{input placeholder='Enter text ...' value=required3 focus-out=(action validate)}}
     {{errorMsg}}
   {{/form-validate-field}}
 

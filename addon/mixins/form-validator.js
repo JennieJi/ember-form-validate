@@ -26,14 +26,18 @@ export default Ember.Mixin.create(
    * @type {string}
    */
   errorMessage: void 0,
+  _validateError: void 0,
   _updateErrorMessage(errorObj) {
     if (!(this.get('isDestroyed') || this.get('isDestroying'))) {
-      this.set('errorMessage', errorObj &&
-        (errorObj.errorMessage ||
-          (Ember.isPresent(errorObj.error) &&
-            (Ember.String.isHTMLSafe && Ember.String.isHTMLSafe(errorObj.error) ? errorObj.error : errorObj.error.toString())
-          ) || '')
-      );
+      this.setProperties({
+        errorMessage: errorObj &&
+          (errorObj.errorMessage ||
+            (Ember.isPresent(errorObj.error) &&
+              (Ember.String.isHTMLSafe && Ember.String.isHTMLSafe(errorObj.error) ? errorObj.error : errorObj.error.toString())
+            ) || ''),
+        _validateError: errorObj
+      });
+      this._validatorGroupCaller(this.get('validatorGroup'), 'updateError', [this]);
     }
   },
   /**
@@ -64,17 +68,17 @@ export default Ember.Mixin.create(
   }),
 
   _register(group) {
-    if (Ember.isArray(group)){
-      group.forEach(g => this._register(g));
-    } else if (group && group.register) {
-      group.register(this);
-    }
+    this._validatorGroupCaller(group, 'register', [this]);
   },
   _unregister(group) {
+    this._validatorGroupCaller(group, 'unregister', [this]);
+  },
+  _validatorGroupCaller(group, action, args = []) {
     if (Ember.isArray(group)){
-      group.forEach(g => this._unregister(g));
-    } else if (group && group.unregister) {
-      group.unregister(this);
+      const originalArgs = Array.prototype.slice.call(arguments, 1);
+      group.forEach(g => this._validatorGroupCaller(g, ...originalArgs));
+    } else if (group && group[action]) {
+      group[action](...args);
     }
   },
 

@@ -6,6 +6,8 @@
 <dt><a href="#COMPONENT_form-validate">COMPONENT:form-validate</a></dt>
 <dd><p>Wrapper component for a form for having the ability of validating all the elements together.</p>
 </dd>
+<dt><a href="#HELPER_form-validator">HELPER:form-validator</a></dt>
+<dd></dd>
 <dt><a href="#MIXIN_form-validator">MIXIN:form-validator</a></dt>
 <dd></dd>
 </dl>
@@ -50,6 +52,18 @@ Wrapper component for a form for having the ability of validating all the elemen
      <p>{{errorMessage}}</p>
    {{/form-validate-field}}
 {{/form-validate}}
+```
+<a name="HELPER_form-validator"></a>
+
+## HELPER:form-validator
+**Since**: 0.0.1-beta.10  
+**Example**  
+```js
+// Use validator provided in light-validate-js
+{{validator 'Length' params=myParams errorMessage='Invalid'}}
+
+// Use a function defined in controller
+{{validator (action validateFunction) params=myParams}}
 ```
 <a name="MIXIN_form-validator"></a>
 
@@ -124,6 +138,7 @@ ValidateGroup
     * [.unregister(field)](#ValidateGroup+unregister)
     * [.resetErrors()](#ValidateGroup+resetErrors) ⇒ <code>Array</code>
     * [.getError(field)](#ValidateGroup+getError) ⇒ <code>ValidateError</code>
+    * [.updateError(field)](#ValidateGroup+updateError)
     * [.validate(exitOnceError)](#ValidateGroup+validate) ⇒ <code>ValidatePromise</code>
 
 <a name="ValidateGroup+parseGroup"></a>
@@ -162,6 +177,16 @@ ValidateGroup
 
 ### validateGroup.getError(field) ⇒ <code>ValidateError</code>
 **Kind**: instance method of <code>[ValidateGroup](#ValidateGroup)</code>  
+
+| Param | Type |
+| --- | --- |
+| field | <code>Ember.Component</code> | 
+
+<a name="ValidateGroup+updateError"></a>
+
+### validateGroup.updateError(field)
+**Kind**: instance method of <code>[ValidateGroup](#ValidateGroup)</code>  
+**Since**: 0.0.1-beta.10  
 
 | Param | Type |
 | --- | --- |
