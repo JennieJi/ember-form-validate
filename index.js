@@ -9,5 +9,8 @@ module.exports = {
 
     app.import(app.bowerDirectory + '/light-validate-js/dist/Validator.validate.js');
     app.import(app.bowerDirectory + '/light-validate-js/dist/Validator.validator.js');
+  },
+  isDevelopingAddon: function() {
+    return true;
   }
 };

@@ -102,9 +102,7 @@ export class ValidateGroup {
       let existingError = this.getError(field);
       let errorName = id < 0 ? this.cacheValidateFields.length : id;
       if (existingError) {
-        Ember.merge(existingError, {
-          name: errorName
-        });
+        Ember.set(existingError, 'name', errorName);
       } else {
         this.errors.pushObject(Ember.merge({
           name: errorName

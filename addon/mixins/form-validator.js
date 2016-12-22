@@ -71,7 +71,9 @@ export default Ember.Mixin.create(
     this._validatorGroupCaller(group, 'register', [this]);
   },
   _unregister(group) {
-    this._validatorGroupCaller(group, 'unregister', [this]);
+    Ember.run.next(this, function() {
+      this._validatorGroupCaller(group, 'unregister', [this]);
+    });
   },
   _validatorGroupCaller(group, action, args = []) {
     if (Ember.isArray(group)){
