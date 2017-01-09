@@ -10,7 +10,7 @@ NOTE that this addon needs >=ember-cli@2.2.0beta.6
 ### Basic Usage
 You can use provided components form-validate and form-validate-field to do some simple tasks.    
 HBS:
-```
+```hbs
 {{#form-validate as |form validate|}}
   <ul class="errors">
     {{#each form.errors as |err|}}
