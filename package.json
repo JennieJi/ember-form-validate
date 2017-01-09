@@ -7,10 +7,10 @@
     "test": "tests"
   },
   "scripts": {
-    "build": "ember build",
-    "start": "ember server",
-    "test": "ember try:testall",
-    "docs": "jsdoc2md \"addon/**/*.js\" > DOC.md"
+    "build": "./node_modules/.bin/ember build",
+    "start": "./node_modules/.bin/ember server",
+    "test": "./node_modules/.bin/ember try:testall",
+    "docs": "./node_modules/.bin/jsdoc2md \"addon/**/*.js\" > DOC.md"
   },
   "repository": "",
   "engines": {

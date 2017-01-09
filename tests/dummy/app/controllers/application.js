@@ -37,7 +37,7 @@ export default Ember.Controller.extend({
   fieldDisplay: true,
 
   actions: {
-    destoryField(callback, e) {
+    destoryField(callback) {
       this.set('fieldDisplay', false);
       if (typeof callback === 'function') {
         callback.call(this);
