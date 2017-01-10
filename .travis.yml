@@ -32,10 +32,10 @@ before_install:
   - sh -e /etc/init.d/xvfb start
   - npm config set spin false
   - npm install -g npm@^3
+  - npm install -g bower
   - bower --version
 
 install:
-  - npm install -g bower
   - npm install
   - bower install
 
