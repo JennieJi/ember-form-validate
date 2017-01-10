@@ -7,7 +7,6 @@ A simple ember form validate addon, using [light-validate-js](https://github.com
 [API details here](DOC.md)
 
 ## Get start
-NOTE that this addon needs >=ember-cli@2.2.0beta.6
 ### Installation
 `ember install ember-form-validate`    
 ### Basic Usage

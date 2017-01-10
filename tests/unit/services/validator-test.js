@@ -1,8 +1,15 @@
 import { moduleFor, test } from 'ember-qunit';
+import startApp from '../../helpers/start-app';
+import Ember from 'ember';
 
+let App;
 moduleFor('service:validator', 'Unit | Service | validator', {
-  // Specify the other units that are required for this test.
-  // needs: ['service:foo']
+  beforeEach: function() {
+    App = startApp();
+  },
+  afterEach: function() {
+    Ember.run(App, 'destroy');
+  }
 });
 
 // Replace this with your real tests.
