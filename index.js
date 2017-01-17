@@ -3,14 +3,10 @@
 
 module.exports = {
   name: 'ember-form-validate',
-
   included: function(app) {
-    this._super.included.apply(this, arguments);
+    this._super.included(app);
 
     app.import(app.bowerDirectory + '/light-validate-js/dist/Validator.validate.js');
     app.import(app.bowerDirectory + '/light-validate-js/dist/Validator.validator.js');
-  },
-  isDevelopingAddon: function() {
-    return true;
   }
 };

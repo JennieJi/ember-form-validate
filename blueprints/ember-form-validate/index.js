@@ -1,6 +1,6 @@
 /*jshint node:true*/
 module.exports = {
-  description: '',
+  normalizeEntityName: function() {},
 
   // locals: function(options) {
   //   // Return custom template variables here.
@@ -10,6 +10,6 @@ module.exports = {
   // }
 
   afterInstall: function(options) {
-    return this.addBowerPackageToProject('light-validate-js', '~0.0.1');
+    return this.addBowerPackageToProject('light-validate-js', '^0.0.1-beta.2');
   }
 };
