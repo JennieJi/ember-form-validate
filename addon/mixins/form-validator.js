@@ -42,9 +42,27 @@ export default Ember.Mixin.create(
   },
   /**
    * Instance of component form-validate
-   * @type {?COMPONENT:form-validate}
+   * @type {?Array.<COMPONENT:form-validate>}
    */
-  validatorGroup: void 0,
+  validatorGroup: Ember.computed('_validatorGroup', {
+    get() {
+      return this.get('_valdiatorGroup');
+    },
+    set(key, value) {
+      const oldVal = this.get('_validatorGroup');
+      const newVal = !Ember.isNone(value) ? Ember.isArray(value) ? value : [value] : [];
+      let groupAdded = Ember.copy(newVal);
+      oldVal.forEach(g => {
+        const indexInNewVal = groupAdded.indexOf(g);
+        if (indexInNewVal >= 0) { return groupAdded.removeAt(indexInNewVal); }
+        return g.unregister && g.unregister(this);
+      });
+      if (!this.get('disabled')) {
+        groupAdded.forEach(g => g.register && g.register(this));
+      }
+      return this.set('_validatorGroup', newVal);
+    }
+  }),
   _validatorGroup: void 0,
   /**
    * A group of validators, see light-form-validate's validators parameter of validate method.
@@ -87,22 +105,15 @@ export default Ember.Mixin.create(
   _resetValidate() {
     this._updateErrorMessage();
   },
-  _formValidatorSetup: Ember.on('init', Ember.observer('validatorGroup', function() {
-    const newGroup = this.get('validatorGroup');
-    this._unregister(this.get('_validatorGroup'));
-    this.set('_validatorGroup', newGroup);
-    if (!this.get('disabled')) {
-      this._register(newGroup);
-    }
-  })),
-  _formValidatorEnable: Ember.on('init', Ember.observer('disabled', function() {
+
+  _formValidatorEnable: Ember.observer('disabled', function() {
     if (this.get('disabled')) {
       this._unregister(this.get('validatorGroup'));
       this._resetValidate();
     } else {
       this._register(this.get('validatorGroup'));
     }
-  })),
+  }),
   willDestroyElement() {
     this._unregister(this.get('validatorGroup'));
   },
