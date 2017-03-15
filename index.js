@@ -3,6 +3,9 @@
 
 module.exports = {
   name: 'ember-form-validate',
+  isDevelopingAddon: function() {
+    return true;
+  },
   included: function(app) {
     this._super.included(app);
 

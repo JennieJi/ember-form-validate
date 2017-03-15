@@ -13,10 +13,8 @@ const {validate, groupValidate} = Validator.validate;
  * @class
  */
 export class ValidateGroup {
-  constructor () {
+  constructor() {
     this.fields = Ember.A();
-    this.cacheValidateFields =  Ember.A();
-    this.errors =  Ember.A();
   }
 
   /**
@@ -61,57 +59,6 @@ export class ValidateGroup {
     if (index >= 0) {
       this.fields.removeAt(index);
     }
-    this._removeError(field);
-  }
-
-  /**
-   * @method
-   * @return {Array} See {@link ValidateGroup.errors}
-   */
-  resetErrors() {
-    return this.errors.clear();
-  }
-
-  _getCachedFieldIndex(field) {
-    return this.cacheValidateFields.indexOf(field);
-  }
-  /**
-   * @method
-   * @param field {Ember.Component}
-   * @return {ValidateError}
-   */
-  getError(field) {
-    const id = this._getCachedFieldIndex(field).toString();
-    return this.errors.find(f => f.name.toString() === id);
-  }
-
-  _removeError(field) {
-    this.errors.removeObject(this.getError(field));
-  }
-  /**
-   * @method
-   * @since 0.0.1-beta.10
-   * @param field {Ember.Component}
-   */
-  updateError(field) {
-    const fieldError = field.get('_validateError');
-    if (!fieldError) {
-      this._removeError(field);
-    } else {
-      const id = this._getCachedFieldIndex(field);
-      let existingError = this.getError(field);
-      let errorName = id < 0 ? this.cacheValidateFields.length : id;
-      if (existingError) {
-        Ember.set(existingError, 'name', errorName);
-      } else {
-        this.errors.pushObject(Ember.merge({
-          name: errorName
-        }, fieldError));
-      }
-      if (id < 0) {
-        this.cacheValidateFields.pushObject(field);
-      }
-    }
   }
 
   /**
@@ -121,21 +68,14 @@ export class ValidateGroup {
    */
   validate(exitOnceError = true) {
     const cacheFields = this.fields.slice();
-    this.resetErrors();
     return groupValidate(this.parseGroup(this.fields), exitOnceError).then(() => {
-      this.cacheValidateFields.setObjects(cacheFields);
-      this.resetErrors();
+      cacheFields.forEach(field => field.resetValidate());
       return true;
     }).catch(errs => {
-      this.cacheValidateFields.setObjects(cacheFields);
-      if (Ember.isArray(errs)) {
-        errs.forEach(err => {
-          if (Ember.isPresent(err && err.name) && Ember.isPresent(cacheFields[err.name])) {
-            cacheFields[err.name]._updateErrorMessage(err);
-          }
-        });
-      }
-      this.errors.setObjects(errs);
+      errs = Ember.isArray(errs) ? errs : [];
+      cacheFields.forEach((field, i) => {
+        field.updateErrorMessage(errs.find(e => e.name.toString() === i.toString()));
+      });
       throw errs;
     });
   }

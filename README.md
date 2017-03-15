@@ -16,8 +16,10 @@ HBS:
 ```hbs
 {{#form-validate as |form validate|}}
   <ul class="errors">
-    {{#each form.errors as |err|}}
-      <li>{{err.name}}: {{err.errorMessage}}</li>
+    {{#each form.fields as |field index|}}
+      {{#if field.errorMessage}}
+        <li>{{index}}: {{field.errorMessage}}</li>
+      {{/if}}
     {{/each}}
   </ul>
 

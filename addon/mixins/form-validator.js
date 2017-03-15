@@ -26,11 +26,11 @@ export default Ember.Mixin.create(
       const group = this.get('validatorGroup');
       if (value) {
         this._unregister(group);
-        this._resetValidate();
+        this.resetValidate();
       } else {
         this._register(group);
       }
-      return this.set('_disabled', value);
+      return Ember.trySet(this, '_disabled', value);
     }
   }),
   _disabled: false,
@@ -43,7 +43,21 @@ export default Ember.Mixin.create(
    * @type {string}
    */
   errorMessage: void 0,
+  /**
+   * Original ValdiateError object returned by light-validate-js
+   * @type {ValidateError}
+   * @See {@link https://github.com/JennieJi/light-validate-js/blob/master/API.md#ValidateError|light-validate-js}
+   */
   _validateError: void 0,
+  /**
+   * Update error message list with given error objects
+   * @method
+   * @since 0.0.1-beta.13
+   * @param errorObj {ValidateError} See {@link https://github.com/JennieJi/light-validate-js/blob/master/API.md#ValidateError|light-validate-js}
+   */
+  updateErrorMessage(errorObj) {
+    Ember.run.debounce(this, this._updateErrorMessage, errorObj, 300);
+  },
   _updateErrorMessage(errorObj) {
     if (!(this.get('isDestroyed') || this.get('isDestroying'))) {
       this.setProperties({
@@ -54,7 +68,6 @@ export default Ember.Mixin.create(
             ) || ''),
         _validateError: errorObj
       });
-      this._validatorGroupCaller(this.get('validatorGroup'), 'updateError', [this]);
     }
   },
   /**
@@ -67,7 +80,7 @@ export default Ember.Mixin.create(
     },
     set(key, value) {
       const oldVal = this.get('_validatorGroup');
-      const newVal = Ember.A(!Ember.isArray(value) ? value instanceof ValidateGroup ? [value] : [] : value);
+      const newVal = Ember.A().pushObjects(!Ember.isArray(value) ? (value instanceof ValidateGroup) ? [value] : [] : value);
       let groupAdded = Ember.copy(newVal);
       if (Ember.isArray(oldVal)) {
         oldVal.forEach(g => {
@@ -82,7 +95,7 @@ export default Ember.Mixin.create(
       if (!this.get('disabled')) {
         groupAdded.forEach(g => g.register && g.register(this));
       }
-      return this.set('_validatorGroup', newVal);
+      return Ember.trySet(this, '_validatorGroup', newVal);
     }
   }),
   _validatorGroup: [],
@@ -121,9 +134,12 @@ export default Ember.Mixin.create(
       group[action](...args);
     }
   },
-
-  _resetValidate() {
-    this._updateErrorMessage();
+  /**
+   * @method
+   * @since 0.0.1-beta.13
+   */
+  resetValidate() {
+    this.updateErrorMessage();
   },
 
   willDestroyElement() {
@@ -139,7 +155,7 @@ export default Ember.Mixin.create(
   validate() {
     if (this.get('disabled')) { return; }
     const validators = this.get('_validators');
-    return this.get('validator').validate(this.get('value'), validators).then(() => this._resetValidate()).catch(err => this._updateErrorMessage(err));
+    return this.get('validator').validate(this.get('value'), validators).then(() => this.resetValidate()).catch(err => this.updateErrorMessage(err));
   },
 
   /**

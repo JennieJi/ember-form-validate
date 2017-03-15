@@ -73,10 +73,13 @@ Wrapper component for a form for having the ability of validating all the elemen
     * [.disabled](#MIXIN_form-validator.disabled) : <code>boolean</code>
     * [.value](#MIXIN_form-validator.value) : <code>Object</code>
     * [.errorMessage](#MIXIN_form-validator.errorMessage) : <code>string</code>
-    * [.validatorGroup](#MIXIN_form-validator.validatorGroup) : <code>[COMPONENT:form-validate](#COMPONENT_form-validate)</code>
+    * [._validateError](#MIXIN_form-validator._validateError) : <code>ValidateError</code>
+    * [.validatorGroup](#MIXIN_form-validator.validatorGroup) : <code>[Array.&lt;COMPONENT:form-validate&gt;](#COMPONENT_form-validate)</code>
     * [.validators](#MIXIN_form-validator.validators) : <code>object</code> &#124; <code>function</code> &#124; <code>Array.&lt;object&gt;</code>
     * [.actions](#MIXIN_form-validator.actions) : <code>object</code>
         * [.validate()](#MIXIN_form-validator.actions.validate)
+    * [.updateErrorMessage(errorObj)](#MIXIN_form-validator.updateErrorMessage)
+    * [.resetValidate()](#MIXIN_form-validator.resetValidate)
     * [.validate()](#MIXIN_form-validator.validate) ⇒ <code>string</code>
 
 <a name="MIXIN_form-validator.disabled"></a>
@@ -94,9 +97,16 @@ Value for validation
 
 ### MIXIN:form-validator.errorMessage : <code>string</code>
 **Kind**: static property of <code>[MIXIN:form-validator](#MIXIN_form-validator)</code>  
+<a name="MIXIN_form-validator._validateError"></a>
+
+### MIXIN:form-validator._validateError : <code>ValidateError</code>
+Original ValdiateError object returned by light-validate-js
+
+**Kind**: static property of <code>[MIXIN:form-validator](#MIXIN_form-validator)</code>  
+**See**: [light-validate-js](https://github.com/JennieJi/light-validate-js/blob/master/API.md#ValidateError)  
 <a name="MIXIN_form-validator.validatorGroup"></a>
 
-### MIXIN:form-validator.validatorGroup : <code>[COMPONENT:form-validate](#COMPONENT_form-validate)</code>
+### MIXIN:form-validator.validatorGroup : <code>[Array.&lt;COMPONENT:form-validate&gt;](#COMPONENT_form-validate)</code>
 Instance of component form-validate
 
 **Kind**: static property of <code>[MIXIN:form-validator](#MIXIN_form-validator)</code>  
@@ -118,6 +128,23 @@ A group of validators, see light-form-validate's validators parameter of validat
 
 - [ ] Deprecate in next version
 
+<a name="MIXIN_form-validator.updateErrorMessage"></a>
+
+### MIXIN:form-validator.updateErrorMessage(errorObj)
+Update error message list with given error objects
+
+**Kind**: static method of <code>[MIXIN:form-validator](#MIXIN_form-validator)</code>  
+**Since**: 0.0.1-beta.13  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| errorObj | <code>ValidateError</code> | See [light-validate-js](https://github.com/JennieJi/light-validate-js/blob/master/API.md#ValidateError) |
+
+<a name="MIXIN_form-validator.resetValidate"></a>
+
+### MIXIN:form-validator.resetValidate()
+**Kind**: static method of <code>[MIXIN:form-validator](#MIXIN_form-validator)</code>  
+**Since**: 0.0.1-beta.13  
 <a name="MIXIN_form-validator.validate"></a>
 
 ### MIXIN:form-validator.validate() ⇒ <code>string</code>
@@ -136,9 +163,6 @@ ValidateGroup
     * [.parseGroup(fields)](#ValidateGroup+parseGroup) ⇒ <code>Array.&lt;object&gt;</code>
     * [.register(field)](#ValidateGroup+register)
     * [.unregister(field)](#ValidateGroup+unregister)
-    * [.resetErrors()](#ValidateGroup+resetErrors) ⇒ <code>Array</code>
-    * [.getError(field)](#ValidateGroup+getError) ⇒ <code>ValidateError</code>
-    * [.updateError(field)](#ValidateGroup+updateError)
     * [.validate(exitOnceError)](#ValidateGroup+validate) ⇒ <code>ValidatePromise</code>
 
 <a name="ValidateGroup+parseGroup"></a>
@@ -163,30 +187,6 @@ ValidateGroup
 
 ### validateGroup.unregister(field)
 **Kind**: instance method of <code>[ValidateGroup](#ValidateGroup)</code>  
-
-| Param | Type |
-| --- | --- |
-| field | <code>Ember.Component</code> | 
-
-<a name="ValidateGroup+resetErrors"></a>
-
-### validateGroup.resetErrors() ⇒ <code>Array</code>
-**Kind**: instance method of <code>[ValidateGroup](#ValidateGroup)</code>  
-**Returns**: <code>Array</code> - See [ValidateGroup.errors](ValidateGroup.errors)  
-<a name="ValidateGroup+getError"></a>
-
-### validateGroup.getError(field) ⇒ <code>ValidateError</code>
-**Kind**: instance method of <code>[ValidateGroup](#ValidateGroup)</code>  
-
-| Param | Type |
-| --- | --- |
-| field | <code>Ember.Component</code> | 
-
-<a name="ValidateGroup+updateError"></a>
-
-### validateGroup.updateError(field)
-**Kind**: instance method of <code>[ValidateGroup](#ValidateGroup)</code>  
-**Since**: 0.0.1-beta.10  
 
 | Param | Type |
 | --- | --- |

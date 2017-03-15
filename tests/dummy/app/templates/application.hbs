@@ -3,18 +3,28 @@
 {{#form-validate as |form validate|}}
   <legend>Form A</legend>
   <ul class="errors">
-    {{#each form.errors as |err|}}
-      <li>{{err.name}}: {{if err.errorMessage err.errorMessage err.error}}</li>
+    {{#each form.fields as |field index|}}
+      {{#if field.errorMessage}}
+        <li>{{index}}: {{field.errorMessage}}</li>
+      {{/if}}
     {{/each}}
   </ul>
 
   {{#form-validate as |formB validateFormB|}}
     <legend>Form B</legend>
-    {{#each formB.errors as |err|}}
-      <li>{{err.name}}: {{if err.errorMessage err.errorMessage err.error}}</li>
+
+    {{#each formB.fields as |field index|}}
+      {{#if field.errorMessage}}
+        <li>{{index}}: {{field.errorMessage}}</li>
+      {{/if}}
     {{/each}}
+
     {{#if fieldDisplay}}
-      {{#form-validate-field value=required validators=(validator 'Length' (hash min=0 excludeEdge=true) errorMessage='Field is Required') validatorGroup=(array formB form) as |validate errorMsg|}}
+      {{#form-validate-field
+      value=required
+      validators=(validator 'Length' (hash min=0 excludeEdge=true) errorMessage='Field is Required')
+      validatorGroup=(array formB form)
+      as |validate errorMsg|}}
         Required(Multi group): {{input placeholder='Enter text ...' value=required focus-out=(action validate)}}
         {{input type='button' value='validate reguired' click=(action validate)}} {{errorMsg}}
       {{/form-validate-field}}
