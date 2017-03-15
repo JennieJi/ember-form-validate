@@ -43,10 +43,17 @@ export class ValidateGroup {
   /**
    * @method
    * @param field {Ember.Component}
+   * @param [insertAt] {number}       Since 0.0.1-beta.13, allow to register in a certain place
    */
-  register(field) {
+  register(field, insertAt) {
     if (this.fields.indexOf(field) < 0) {
-      this.fields.addObject(field);
+      insertAt = parseInt(insertAt, 10);
+      if (!insertAt && insertAt !== 0 || insertAt > this.fields.length) {
+        insertAt = this.fields.length;
+      } else if (insertAt < 0) {
+        insertAt = 0;
+      }
+      this.fields.insertAt(insertAt, field);
     }
   }
 

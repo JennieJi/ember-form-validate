@@ -14,9 +14,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
   - error message update triggered by validating by validator group
 
 ### Changed
-- Add MIXIN:form-validator.updateErrorMessage to have a debounce process of updating error message
-- Rename MIXIN:form-validator._resetValidate to .resetValidate, since it is public and being used by validator group
-- Fix group validate error update
+- SERVICE:validator~ValidateGroup
+  + Fix group validate error update
+  + .register allow to assign register index
+- MIXIN:form-validator:
+  + Add MIXIN:form-validator.updateErrorMessage to have a debounce process of updating error message
+  + Rename MIXIN:form-validator._resetValidate to .resetValidate, since it is public and being used by validator group
+  + Register field to group according to UI document order
 
 ## [0.0.1-beta.12] - 2017-03-14
 ### Changed

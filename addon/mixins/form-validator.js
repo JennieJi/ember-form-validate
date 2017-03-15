@@ -1,6 +1,27 @@
 import Ember from 'ember';
 import {ValidateGroup} from 'ember-form-validate/services/validator';
 
+function runEach(subject, func, ...args) {
+  if (Ember.isArray(subject)) {
+    Array.prototype.forEach.call(subject, s => runEach(s, func, ...args));
+  } else if (Ember.isPresent(subject)) {
+    func(subject, ...args);
+  }
+}
+
+function findNearestItemIndexInChildset(parentset, index, childset) {
+  if (index === parentset.length - 1) {
+    return childset.length;
+  } else {
+    const result = childset.indexOf(parentset[index + 1]);
+    if (result < 0) {
+      return findNearestItemIndexInChildset(parentset, index + 1, childset);
+    } else {
+      return result;
+    }
+  }
+}
+
 /**
  * @exports MIXIN:form-validator
  */
@@ -88,12 +109,12 @@ export default Ember.Mixin.create(
           if (indexInNewVal >= 0) {
             groupAdded.splice(indexInNewVal, 1);
           } else {
-            return g.unregister && g.unregister(this);
+            this._unregister(g);
           }
         });
       }
       if (!this.get('disabled')) {
-        groupAdded.forEach(g => g.register && g.register(this));
+        this._register(groupAdded);
       }
       return Ember.trySet(this, '_validatorGroup', newVal);
     }
@@ -120,19 +141,26 @@ export default Ember.Mixin.create(
     }
   }),
 
+  _getOrderInGroup(group) {
+    const allFields = Ember.$('.ember-form-validate__validator').toArray().map(field => field.id);
+    const groupFields = group.fields.map(field => field.elementId);
+    const indexInAll = allFields.indexOf(this.elementId);
+    return findNearestItemIndexInChildset(allFields, indexInAll, groupFields);
+  },
   _register(group) {
-    this._validatorGroupCaller(group, 'register', [this]);
+    const field = this;
+    Ember.run.scheduleOnce('afterRender', this, () => {
+      runEach(group, (g) => {
+        const insertAt = field._getOrderInGroup(g);
+        g.register(field, insertAt);
+      });
+    });
   },
   _unregister(group) {
-    this._validatorGroupCaller(group, 'unregister', [this]);
-  },
-  _validatorGroupCaller(group, action, args = []) {
-    if (Ember.isArray(group)){
-      const originalArgs = Array.prototype.slice.call(arguments, 1);
-      group.forEach(g => this._validatorGroupCaller(g, ...originalArgs));
-    } else if (group && group[action]) {
-      group[action](...args);
-    }
+    const field = this;
+    runEach(group, (g) => {
+      g.unregister(field);
+    });
   },
   /**
    * @method
