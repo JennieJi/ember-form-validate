@@ -48,10 +48,8 @@ export class ValidateGroup {
   register(field, insertAt) {
     if (this.fields.indexOf(field) < 0) {
       insertAt = parseInt(insertAt, 10);
-      if (!insertAt && insertAt !== 0 || insertAt > this.fields.length) {
+      if (!insertAt && insertAt !== 0 || insertAt < 0 || insertAt > this.fields.length) {
         insertAt = this.fields.length;
-      } else if (insertAt < 0) {
-        insertAt = 0;
       }
       this.fields.insertAt(insertAt, field);
     }
@@ -80,9 +78,7 @@ export class ValidateGroup {
       return true;
     }).catch(errs => {
       errs = Ember.isArray(errs) ? errs : [];
-      cacheFields.forEach((field, i) => {
-        field.updateErrorMessage(errs.find(e => e.name.toString() === i.toString()));
-      });
+      errs.forEach(err => cacheFields[err.name].updateErrorMessage(err));
       throw errs;
     });
   }
