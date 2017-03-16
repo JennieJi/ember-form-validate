@@ -6,7 +6,7 @@ moduleForComponent('form-validate', 'Integration | Component | form validate', {
 });
 
 test('it renders', function(assert) {
-  
+
   // Set any properties with this.set('myProperty', 'value');
   // Handle any actions with this.on('myAction', function(val) { ... });" + EOL + EOL +
 
@@ -23,3 +23,6 @@ test('it renders', function(assert) {
 
   assert.equal(this.$().text().trim(), 'template block text');
 });
+
+// test('register a group of fields in DOM order', function(assert) {
+// });

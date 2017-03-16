@@ -84,6 +84,24 @@ test('destory/init component and it should be register/unregistered from validat
   this.set('showComponent', true);
   assert.equal(group.fields.length, 1);
 });
+test('destroy and re-init component and it should be registered to original order in validatorGroup', function(assert) {
+  const group = getGroupInstance();
+  this.set('validatorGroup', group);
+  this.set('showComponent', true);
+  this.render(hbs`
+    {{form-validate-field validatorGroup=validatorGroup}}
+    {{#if showComponent}}
+      {{form-validate-field class='component-to-check' validatorGroup=validatorGroup}}
+    {{/if}}
+    {{form-validate-field validatorGroup=validatorGroup}}
+  `);
+  assert.equal(group.fields.length, 3);
+  assert.equal(group.fields[1].class, 'component-to-check');
+  this.set('showComponent', false);
+  assert.equal(group.fields.length, 2);
+  this.set('showComponent', true);
+  assert.equal(group.fields[1].class, 'component-to-check');
+});
 test('component validate failed, it should have error message', function(assert) {
   const group = getGroupInstance();
   this.set('validators', validatorWithErrorMessage);

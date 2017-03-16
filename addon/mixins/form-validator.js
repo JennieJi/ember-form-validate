@@ -113,9 +113,7 @@ export default Ember.Mixin.create(
           }
         });
       }
-      if (!this.get('disabled')) {
-        this._register(groupAdded);
-      }
+      this._register(groupAdded);
       return Ember.trySet(this, '_validatorGroup', newVal);
     }
   }),
@@ -150,6 +148,7 @@ export default Ember.Mixin.create(
   _register(group) {
     const field = this;
     Ember.run.scheduleOnce('afterRender', this, () => {
+      if (this.get('disabled')) { return; }
       runEach(group, (g) => {
         const insertAt = field._getOrderInGroup(g);
         g.register(field, insertAt);
