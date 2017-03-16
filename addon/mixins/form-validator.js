@@ -44,13 +44,15 @@ export default Ember.Mixin.create(
       return this.get('_disabled');
     },
     set(key, value) {
-      const group = this.get('validatorGroup');
-      if (value) {
-        this._unregister(group);
-        this.resetValidate();
-      } else {
-        this._register(group);
-      }
+      Ember.run.scheduleOnce('afterRender', this, () => {
+        const group = this.get('validatorGroup');
+        if (value) {
+          this._unregister(group);
+          this.resetValidate();
+        } else {
+          this._register(group);
+        }
+      });
       return Ember.trySet(this, '_disabled', value);
     }
   }),
@@ -102,18 +104,20 @@ export default Ember.Mixin.create(
     set(key, value) {
       const oldVal = this.get('_validatorGroup');
       const newVal = Ember.A().pushObjects(!Ember.isArray(value) ? (value instanceof ValidateGroup) ? [value] : [] : value);
-      let groupAdded = Ember.copy(newVal);
-      if (Ember.isArray(oldVal)) {
-        oldVal.forEach(g => {
-          const indexInNewVal = groupAdded.indexOf(g);
-          if (indexInNewVal >= 0) {
-            groupAdded.splice(indexInNewVal, 1);
-          } else {
-            this._unregister(g);
-          }
-        });
-      }
-      this._register(groupAdded);
+      Ember.run.scheduleOnce('afterRender', this, () => {
+        let groupAdded = Ember.copy(this.get('_validatorGroup'));
+        if (Ember.isArray(oldVal)) {
+          oldVal.forEach(g => {
+            const indexInNewVal = groupAdded.indexOf(g);
+            if (indexInNewVal >= 0) {
+              groupAdded.splice(indexInNewVal, 1);
+            } else {
+              this._unregister(g);
+            }
+          });
+        }
+        this._register(groupAdded);
+      });
       return Ember.trySet(this, '_validatorGroup', newVal);
     }
   }),
@@ -147,12 +151,10 @@ export default Ember.Mixin.create(
   },
   _register(group) {
     const field = this;
-    Ember.run.scheduleOnce('afterRender', this, () => {
-      if (this.get('disabled')) { return; }
-      runEach(group, (g) => {
-        const insertAt = field._getOrderInGroup(g);
-        g.register(field, insertAt);
-      });
+    if (this.get('disabled')) { return; }
+    runEach(group, (g) => {
+      const insertAt = field._getOrderInGroup(g);
+      g.register(field, insertAt);
     });
   },
   _unregister(group) {
