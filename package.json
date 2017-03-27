@@ -12,7 +12,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/JennieJi/ember-form-validate.gits"
+    "url": "https://github.com/JennieJi/ember-form-validate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JennieJi/ember-form-validate/issues",
+    "email": "jennie.ji@hotmail.com"
   },
   "scripts": {
     "build": "ember build",

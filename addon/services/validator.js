@@ -1,7 +1,4 @@
 /* global Validator */
-/**
- * @exports SERVICE:validator
- */
 import Ember from 'ember';
 
 Validator.validate.Promise = Ember.RSVP.Promise;
@@ -9,16 +6,19 @@ const {validate, groupValidate} = Validator.validate;
 
 
 /**
- * ValidateGroup
+ * Exported in services/validator.js
  * @class
  */
 export class ValidateGroup {
   constructor() {
+    /**
+     * @this ValidatorGroup
+     * @type {Array.<Ember.Component>}
+     */
     this.fields = Ember.A();
   }
 
   /**
-   * @private
    * @param field {Ember.Component}
    * @return {object}
    */
@@ -43,7 +43,7 @@ export class ValidateGroup {
   /**
    * @method
    * @param field {Ember.Component}
-   * @param [insertAt] {number}       Since 0.0.1-beta.13, allow to register in a certain place
+   * @param [insertAt=ValidatorGroup#fields.length] {number}       Since 0.0.1-beta.13, allow to register in a certain place
    */
   register(field, insertAt) {
     if (this.fields.indexOf(field) < 0) {
@@ -68,7 +68,7 @@ export class ValidateGroup {
 
   /**
    * @method
-   * @param exitOnceError {boolean}
+   * @param exitOnceError {boolean} Whether to exit once met error, or validate all fields.
    * @return {ValidatePromise}
    */
   validate(exitOnceError = true) {
@@ -85,9 +85,11 @@ export class ValidateGroup {
 }
 
 /**
+ * Helper for creating validator.
+ * Exported in services/validator.js.
  * @method
- * @param func {function}
- * @return {Array.<function>}
+ * @param func {function} Validate function, which returns true as valid, or errorMessage/false as invalid. Check light-validate-js for details.
+ * @return {object} Return a light-validate-js format validator object
  */
 export function createValidator (func, ...params) {
   if (typeof func !== 'function') {
@@ -99,11 +101,29 @@ export function createValidator (func, ...params) {
   };
 }
 
-export default Ember.Service.extend({
+
+/**
+ * @exports SERVICE:validator
+ * @borrows createValidator as createValidator
+ */
+export default Ember.Service.extend(
+/** @lends SERVICE:validator */
+{
+  /**
+   * Create a validate group instance
+   * @return {ValidatGroup} ValidateGroup instance
+   */
   createGroup() {
     return new ValidateGroup();
   },
   createValidator,
+  /**
+   * @todo to be deprecated in the next version
+   * @see Validator.validate
+   */
   validate,
+  /**
+   * @see Validator.validator
+   */
   validators: Validator.validator
 });

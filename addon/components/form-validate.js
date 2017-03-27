@@ -4,6 +4,7 @@ import layout from '../templates/components/form-validate';
 /**
  * @exports COMPONENT:form-validate
  * @desc Wrapper component for a form for having the ability of validating all the elements together.
+ * @borrows SERVICE:validator as validator
  *
  * @example
  * // Will export 2 objects:
@@ -15,10 +16,12 @@ import layout from '../templates/components/form-validate';
  *      <p>{{errorMessage}}</p>
  *    {{/form-validate-field}}
  * {{/form-validate}}
- *
- * @prop instance {SERVICE:validator~ValidateGroup}
  */
-export default Ember.Component.extend({
+export default Ember.Component.extend(
+/**
+ * @lends COMPONENT:form-validate
+ */
+{
   validator: Ember.inject.service(),
   layout,
   tagName: 'form',
@@ -26,6 +29,9 @@ export default Ember.Component.extend({
   classNameBindings: [
     'instance.errors.length:ember-form-validate--invalid'
   ],
+  /**
+   * @type {ValidateGroup} Instance of ValidateGroup
+   */
   instance: void 0,
   setup: Ember.on('init', function() {
     if (!this.get('instance')) {
@@ -33,8 +39,20 @@ export default Ember.Component.extend({
       this.set('instance', instance);
     }
   }),
+  /**
+   * @type {boolean} See {@link ValidateGroup.validate}
+   */
   exitOnceError: true,
+  /**
+   * @type {object}
+   */
   actions: {
+    /**
+     * @memberof COMPONENT:form-validate.actions
+     * @param [successCallback] {function}
+     * @param [failCallback] {function}
+     * @return {ValidatePromise} See {@link ValidateGroup.validate}
+     */
     validate(successCallback, failCallback) {
       const instance = this.get('instance');
       if (instance) {

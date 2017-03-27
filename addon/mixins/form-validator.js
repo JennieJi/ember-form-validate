@@ -24,10 +24,14 @@ function findNearestItemIndexInChildset(parentset, index, childset) {
 
 /**
  * @exports MIXIN:form-validator
+ * @mixin
  */
 export default Ember.Mixin.create(
 /** @lends MIXIN:form-validator */
 {
+  /**
+   * @type {SERVICE:validator}
+   */
   validator: Ember.inject.service(),
 
   classNames: ['ember-form-validate__validator'],
@@ -164,6 +168,7 @@ export default Ember.Mixin.create(
     });
   },
   /**
+   * Empty error messages
    * @method
    * @since 0.0.1-beta.13
    */
@@ -192,6 +197,7 @@ export default Ember.Mixin.create(
    */
   actions: {
     /**
+     * @memberof MIXIN:form-validator.actions
      * @todo Deprecate in next version
      */
     validate() {
