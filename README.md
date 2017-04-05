@@ -3,7 +3,6 @@ ember-form-validate
 [![npm version](https://badge.fury.io/js/ember-form-validate.svg)](https://badge.fury.io/js/ember-form-validate) 
 [![ember version](https://embadge.io/v1/jennieji/ember-form-validate/master/ember-cli.svg)](https://badge.fury.io/js/ember-form-validate)
 [![Ember Observer Score](https://emberobserver.com/badges/ember-form-validate.svg)](https://emberobserver.com/addons/ember-form-validate)
-
 [![Coverage Status](https://coveralls.io/repos/github/JennieJi/ember-form-validate/badge.svg?branch=master)](https://coveralls.io/github/JennieJi/ember-form-validate?branch=master)
 =====
 A simple ember form validate addon, using [light-validate-js](https://github.com/JennieJi/light-validate-js) (another repo of mine).    
