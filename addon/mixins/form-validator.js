@@ -83,7 +83,7 @@ export default Ember.Mixin.create(
    * @param errorObj {ValidateError} See {@link https://github.com/JennieJi/light-validate-js/blob/master/API.md#ValidateError|light-validate-js}
    */
   updateErrorMessage(errorObj) {
-    Ember.run.debounce(this, this._updateErrorMessage, errorObj, 300);
+    Ember.run.debounce(this, this._updateErrorMessage, errorObj, 300, true);
   },
   _updateErrorMessage(errorObj) {
     if (!(this.get('isDestroyed') || this.get('isDestroying'))) {
